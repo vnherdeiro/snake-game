@@ -31,7 +31,8 @@ fig.tight_layout(pad=0)
 ax.set_xticks(())
 ax.set_yticks(())
 onPause = False
-foodPoint = ax.scatter( *food[::-1], marker="*", c="#800000")
+food_markersize = 100*60./size
+foodPoint = ax.scatter( *food[::-1], marker="*", c="#800000", s=food_markersize)
 
 
 movementDic = {"right": [0,1], "left": [0,-1], "up": [-1,0], "down": [1,0]}
@@ -52,32 +53,37 @@ fig.canvas.set_window_title(title_score_format.format(score))
 snake_canvas = ax.imshow( snake_tab, vmin=0, vmax=2, cmap="Blues")
 
 while True:
-	head = snake[0]
-	snake_tab[ head[0], head[1]] = 1
-	movement = movementDic[ lastKey]
-	newHead = [(head[0] + movement[0])%size, (head[1] + movement[1])%size]
-	if newHead in snake:
-		#snake has collided into itself, drawing game over screen before exiting
-		snake_canvas.set_visible( False)
-		foodPoint.set_visible( False)
-		ax.text(0.5, 0.75,'GAME OVER', ha='center', va='center', transform=ax.transAxes, fontsize=55)
-		ax.text(0.5, 0.25,'Score: %d' %score, ha='center', va='center', transform=ax.transAxes, fontsize=45)
-		plt.pause(5)
-		exit()
-	if food == newHead:
-		#snake has eaten the food, score and length increase
-		score += 1
-		fig.canvas.set_window_title(title_score_format.format(score))
-		food = None
-		while food is None or food in snake:
-			food = np.random.randint(0, size, size=(2,)).tolist() 
-		foodPoint.set_visible( False)
-		del foodPoint
-		foodPoint = ax.scatter( *food[::-1], marker="*", c="#800000")
+	if not onPause:
+		head = snake[0]
+		snake_tab[ head[0], head[1]] = 1
+		movement = movementDic[ lastKey]
+		newHead = [(head[0] + movement[0])%size, (head[1] + movement[1])%size]
+		if newHead in snake:
+			#snake has collided into itself, drawing game over screen before exiting
+			#snake_canvas.set_visible( False)
+			#foodPoint.set_visible( False)
+			snake_canvas.set_alpha( .25)
+			foodPoint.set_alpha( .25)
+			ax.text(0.5, 0.75,'GAME OVER', ha='center', va='center', transform=ax.transAxes, fontsize=65, fontweight="bold")
+			ax.text(0.5, 0.25,'Score: %d' %score, ha='center', va='center', transform=ax.transAxes, fontsize=45, bbox={"boxstyle":"round","pad":0.5,"alpha":.5})
+			plt.pause(5)
+			exit()
+		if food == newHead:
+			#snake has eaten the food, score and length increase
+			score += 1
+			fig.canvas.set_window_title(title_score_format.format(score))
+			food = None
+			while food is None or food in snake:
+				food = np.random.randint(0, size, size=(2,)).tolist() 
+			foodPoint.set_visible( False)
+			del foodPoint
+			foodPoint = ax.scatter( *food[::-1], marker="*", c="#800000", s=food_markersize)
+		else:
+			tail = snake.pop(-1)
+			snake_tab[ tail[0], tail[1]] = 0
+		snake_tab[ newHead[0], newHead[1]] = 2
+		snake.insert( 0, newHead)
+		snake_canvas.set_data( snake_tab)
+		plt.pause(refresh_delay)
 	else:
-		tail = snake.pop(-1)
-		snake_tab[ tail[0], tail[1]] = 0
-	snake_tab[ newHead[0], newHead[1]] = 2
-	snake.insert( 0, newHead)
-	snake_canvas.set_data( snake_tab)
-	plt.pause(refresh_delay)
+		plt.pause( .25)
