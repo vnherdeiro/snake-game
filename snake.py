@@ -89,6 +89,7 @@ class SnakeGame():
 				movement = self.movementDic[ self.lastKey]
 				newHead = [(head[0] + movement[0])%self.size, (head[1] + movement[1])%self.size]
 				if newHead in self.snake:
+					#collision -> self-canibalism -> game over
 					self.GameOverScreen()
 					plt.pause(5)
 					plt.close('all')
