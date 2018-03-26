@@ -10,8 +10,6 @@ import argparse
 class SnakeGame():
 
 	def __init__( self, size=60, fps=45, figsize=8):
-
-		#frame per second
 		self.fps = fps
 		self.refresh_delay = 1./fps
 		self.figsize = figsize
@@ -37,6 +35,7 @@ class SnakeGame():
 		self.snake = snake
 		self.snake_tab = snake_tab
 		self.food = food
+		self.foodPoint = None
 
 	def initialize_window(self):
 		fig = plt.figure( figsize=(self.figsize,self.figsize))
@@ -48,10 +47,10 @@ class SnakeGame():
 		fig.canvas.mpl_connect( "key_press_event", self.onKeyPress)
 		fig.tight_layout(pad=0)
 		self.snake_canvas = ax.imshow( self.snake_tab, vmin=0, vmax=2, cmap="Blues")
-		self.foodPoint = ax.scatter( *self.food[::-1], marker="*", c="#800000", s=self.food_markersize)
 		self.fig = fig
 		self.ax = ax
 		self.UpdateScore()
+		self.UpdateFood()
 
 	def UpdateScore(self):
 		self.fig.canvas.set_window_title( self.title_score_format.format(self.score))
@@ -60,7 +59,7 @@ class SnakeGame():
 		if self.foodPoint:
 			self.foodPoint.set_visible( False)
 			del self.foodPoint
-			self.foodPoint = self.ax.scatter( *self.food[::-1], marker="*", c="#800000", s=self.food_markersize)
+		self.foodPoint = self.ax.scatter( *self.food[::-1], marker="*", c="#800000", s=self.food_markersize)
 
 	def AddFood( self):
 		self.food = None
