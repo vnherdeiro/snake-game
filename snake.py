@@ -24,7 +24,7 @@ class SnakeGame():
 		self.initialize_snake_food()
 		self.initialize_window()
 
-	def initialize_snake_food(self):
+	def initialize_snake_food( self):
 		snake = [[2,0], [1,0], [0,0]]
 		snake_tab = np.zeros( (self.size,self.size), dtype=np.int8)
 		head = snake[0]
@@ -37,7 +37,7 @@ class SnakeGame():
 		self.food = food
 		self.foodPoint = None
 
-	def initialize_window(self):
+	def initialize_window( self):
 		fig = plt.figure( figsize=(self.figsize,self.figsize))
 		ax = fig.gca()
 		fig.tight_layout(pad=0)
@@ -72,16 +72,16 @@ class SnakeGame():
 		elif event.key in ["left", "right", "up", "down"] and event.key != self.oppositeKey[ self.lastKey]:
 			self.lastKey = event.key
 
-	def GameOverScreen(self):
+	def GameOverScreen( self):
 		#snake has collided into itself, drawing game over screen before exiting
-		self.snake_canvas.set_alpha( .25)
-		self.foodPoint.set_alpha( .25)
+		self.snake_canvas.set_alpha( 0.25)
+		self.foodPoint.set_alpha( 0.25)
 		self.ax.text(0.5, 0.75,'GAME OVER', ha='center', va='center',\
 					transform=self.ax.transAxes, fontsize=65, fontweight="bold")
 		self.ax.text(0.5, 0.25,'Score: %d' %self.score, ha='center', va='center',\
-					transform=self.ax.transAxes, fontsize=45, bbox={"boxstyle":"round","pad":0.5,"alpha":.5})
+					transform=self.ax.transAxes, fontsize=45, bbox={"boxstyle":"round","pad":0.5,"alpha":0.5})
 
-	def GameLoop(self):
+	def GameLoop( self):
 		while True:
 			if not self.onPause:
 				head = self.snake[0]
@@ -89,7 +89,7 @@ class SnakeGame():
 				movement = self.movementDic[ self.lastKey]
 				newHead = [(head[0] + movement[0])%self.size, (head[1] + movement[1])%self.size]
 				if newHead in self.snake:
-					#collision -> self-canibalism -> game over
+					#collision -> self-cannibalism -> game over
 					self.GameOverScreen()
 					plt.pause(5)
 					plt.close('all')
@@ -108,7 +108,7 @@ class SnakeGame():
 				self.snake_canvas.set_data( self.snake_tab)
 				plt.pause(self.refresh_delay)
 			else:
-				plt.pause( .25)
+				plt.pause( 0.25)
 
 
 if __name__ == "__main__":
